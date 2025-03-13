@@ -1,6 +1,10 @@
 spring:
   application:
     name: meetingmanagementproject
+  security:
+    user:
+      name: taeyun1118
+      password: taeyun30504
   datasource:
     url: jdbc:mysql://localhost:3307/swaggerdb
     username: taeyun

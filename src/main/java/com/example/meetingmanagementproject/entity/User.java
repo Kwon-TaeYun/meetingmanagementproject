@@ -24,6 +24,8 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    private String token;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Meeting> meetings; //생성자가 생성한 미팅
 
