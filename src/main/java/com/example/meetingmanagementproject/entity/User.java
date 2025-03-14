@@ -24,7 +24,8 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    private String token;
+    private String accessToken;  // AT 저장
+    private String refreshToken; // RT 저장
 
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 //    private List<Meeting> meetings; //생성자가 생성한 미팅

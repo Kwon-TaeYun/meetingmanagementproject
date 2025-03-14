@@ -2,6 +2,7 @@ package com.example.meetingmanagementproject.controller;
 
 import com.example.meetingmanagementproject.dto.JoinUserListDto;
 import com.example.meetingmanagementproject.dto.MeetingDto;
+import com.example.meetingmanagementproject.dto.MeetingListDto;
 import com.example.meetingmanagementproject.dto.ScheduleDto;
 import com.example.meetingmanagementproject.entity.*;
 import com.example.meetingmanagementproject.service.MeetingService;
@@ -57,7 +58,7 @@ public class MeetingController {
         }
     }
     @GetMapping
-    public ResponseEntity<List<Meeting>> meetingList(){
+    public ResponseEntity<List<MeetingListDto>> meetingList(){
         return ResponseEntity.ok(meetingService.meetingList());
     }
 
@@ -129,6 +130,9 @@ public class MeetingController {
             }
             Meeting meeting = meetingService.findByMeetingId(meetingId);
             User user = userService.findByUserId(userId);
+            if(meeting.getCurrentParticipants() == meeting.getMaxParticipants()){
+                return ResponseEntity.status(401).body("정원 초과로 모임 모집이 마감되었습니다 !!");
+            }
 
             meetingService.joinMeeting(meeting, user);
             return ResponseEntity.ok().body("참가 성공 !!");
@@ -164,10 +168,10 @@ public class MeetingController {
             }else{
                 meetingService.deleteUserAtMeeting(meetingId, userId);
             }
-            return ResponseEntity.ok().body("참가 성공 !!");
+            return ResponseEntity.ok().body("모임 탈퇴 성공 !!");
         }catch (Exception e){
             log.error("참가 실패! 예외 발생: ", e); // 예외를 로그로 출력
-            return ResponseEntity.status(401).body("참가 실패 !!");
+            return ResponseEntity.status(401).body("모임 탈퇴 실패 !!");
         }
     }
 
@@ -250,9 +254,9 @@ public class MeetingController {
             scheduleService.joinSchedules(userSchedule);
 
 
-            return ResponseEntity.ok("저장 성공 !!");
+            return ResponseEntity.ok("일정 참여 성공 !!");
         }catch (Exception e){
-            return ResponseEntity.badRequest().body("저장 실패 !!");
+            return ResponseEntity.badRequest().body("일정 참여 실패 !!");
         }
     }
 

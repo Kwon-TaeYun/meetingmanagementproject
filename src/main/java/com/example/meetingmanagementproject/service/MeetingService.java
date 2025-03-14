@@ -2,6 +2,7 @@ package com.example.meetingmanagementproject.service;
 
 import com.example.meetingmanagementproject.dto.JoinUserListDto;
 import com.example.meetingmanagementproject.dto.MeetingDto;
+import com.example.meetingmanagementproject.dto.MeetingListDto;
 import com.example.meetingmanagementproject.entity.Meeting;
 import com.example.meetingmanagementproject.entity.User;
 import com.example.meetingmanagementproject.repository.MeetingRepository;
@@ -20,8 +21,18 @@ import java.util.stream.Collectors;
 public class MeetingService {
     private final MeetingRepository meetingRepository;
     private final UserRepository userRepository;
-    public List<Meeting> meetingList(){
-        return meetingRepository.findAll();
+    public List<MeetingListDto> meetingList(){
+        List<Meeting> meetings = meetingRepository.findAll();
+
+        // Meeting을 MeetingListDto로 변환
+        return meetings.stream()
+                .map(meeting -> new MeetingListDto(
+                        meeting.getId(),
+                        meeting.getName(),
+                        meeting.getDescription(),
+                        meeting.getMaxParticipants(),
+                        meeting.getCurrentParticipants()))
+                .collect(Collectors.toList());
     }
 
     @Transactional

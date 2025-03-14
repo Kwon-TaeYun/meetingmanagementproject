@@ -11,13 +11,21 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class JwtUtil {
     private static final String SECRET = "my-secret-key";
-    private static final long EXPIRATION_TIME = 1000 * 60 * 60;
+    private static final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 15;  // 15분
+    private static final long REFRESH_TOKEN_EXPIRATION = 1000 * 60 * 60 * 24 * 7; // 7일
     private final ConcurrentHashMap<String, Boolean> invalidTokens = new ConcurrentHashMap<>();
 
-    public String generateToken(Long userId) {
+    public String generateAccessToken(Long userId) {
         return JWT.create()
                 .withSubject(String.valueOf(userId))
-                .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .withExpiresAt(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION))
+                .sign(Algorithm.HMAC256(SECRET));
+    }
+
+    public String generateRefreshToken(Long userId) {
+        return JWT.create()
+                .withSubject(String.valueOf(userId))
+                .withExpiresAt(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION))
                 .sign(Algorithm.HMAC256(SECRET));
     }
 

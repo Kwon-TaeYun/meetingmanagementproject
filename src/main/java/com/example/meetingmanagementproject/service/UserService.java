@@ -5,12 +5,16 @@ import com.example.meetingmanagementproject.repository.UserRepository;
 import com.example.meetingmanagementproject.util.JwtUtil;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
+    private final Map<Long, String> refreshTokenStore = new ConcurrentHashMap<>();
 
     public UserService(UserRepository userRepository, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
@@ -28,25 +32,43 @@ public class UserService {
         return "User registered successfully";
     }
 
-    public String login(String email, String password) {
-        Optional<User> user = userRepository.findByEmail(email);
-        if (user.isPresent() && password.equals(user.get().getPassword())) {
-            String token = jwtUtil.generateToken(user.get().getId());
-            user.get().setToken(token);
-            userRepository.save(user.get());
-            return token;
+    public Map<String, String> login(String email, String password) {
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isPresent() && password.equals(userOptional.get().getPassword())) {
+            User user = userOptional.get();
+            Long userId = user.getId();
+
+            String accessToken = jwtUtil.generateAccessToken(userId);
+            String refreshToken = jwtUtil.generateRefreshToken(userId);
+            // User 엔터티에 토큰 저장 후 DB 업데이트
+            user.setAccessToken(accessToken);
+            user.setRefreshToken(refreshToken);
+            userRepository.save(user);
+
+            Map<String, String> tokens = new HashMap<>();
+            tokens.put("accessToken", accessToken);
+            tokens.put("refreshToken", refreshToken);
+            return tokens;
         }
         return null;
     }
 
     public void logout(String token) {
-        jwtUtil.invalidateToken(token);
+        Long userId = jwtUtil.validateToken(token);
+        if (userId != null) {
+            Optional<User> userOptional = userRepository.findById(userId);
+            if (userOptional.isPresent()) {
+                User user = userOptional.get();
+                user.setRefreshToken(null); // RT 삭제 (AT는 어차피 만료되므로 변경 X)
+                userRepository.save(user);
+            }
+        }
     }
 
-    public String getUserToken(String email) {
-        Optional<User> user = userRepository.findByEmail(email);
-        return user.map(User::getToken).orElse(null);
-    }
+//    public String getUserToken(String email) {
+//        Optional<User> user = userRepository.findByEmail(email);
+//        return user.map(User::getToken).orElse(null);
+//    }
 
     public User findByUserId(Long id){
         return userRepository.findById(id).orElseThrow();

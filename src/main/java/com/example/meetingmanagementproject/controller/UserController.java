@@ -25,23 +25,25 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> user) {
-        String email = user.get("email");
-        String token = userService.login(email, user.get("password"));
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + token);
-        return token != null ? ResponseEntity.ok(new LoginResponseDto(token, email)) : ResponseEntity.status(401).body(new ErrorResponseDto("Invalid credentials"));
+    public ResponseEntity<Map<String, String>> login(@RequestBody Map<String, String> loginRequest) {
+        String email = loginRequest.get("email");
+        String password = loginRequest.get("password");
+
+        Map<String, String> tokens = userService.login(email, password);
+        if (tokens == null) {
+            return ResponseEntity.status(401).body(null);
+        }
+        return ResponseEntity.ok(tokens);
     }
 
     @PostMapping("/logout")
     public ResponseEntity<String> logout(@RequestHeader(value = "Authorization", required = false) String authorization) {
-        log.info("Authorization Header: " + authorization);
         if (authorization == null || !authorization.startsWith("Bearer ")) {
             return ResponseEntity.status(400).body("Authorization header is missing or invalid");
         }
 
-        String token = authorization.substring(7); // "Bearer " 제거
-        userService.logout(token);  // 서비스에서 로그아웃 처리
+        String accessToken = authorization.substring(7); // "Bearer " 제거
+        userService.logout(accessToken);
         return ResponseEntity.ok("Logged out successfully");
     }
 }
