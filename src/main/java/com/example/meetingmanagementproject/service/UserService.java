@@ -47,4 +47,8 @@ public class UserService {
         Optional<User> user = userRepository.findByEmail(email);
         return user.map(User::getToken).orElse(null);
     }
+
+    public User findByUserId(Long id){
+        return userRepository.findById(id).orElseThrow();
+    }
 }

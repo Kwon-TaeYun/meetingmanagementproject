@@ -26,8 +26,8 @@ public class User {
 
     private String token;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Meeting> meetings; //생성자가 생성한 미팅
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Meeting> meetings; //생성자가 생성한 미팅
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserSchedule> userSchedules;

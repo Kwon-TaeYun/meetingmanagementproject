@@ -32,8 +32,8 @@ public class Meeting {
             inverseJoinColumns = @JoinColumn(name="user_id")
     )
     List<User> users = new ArrayList<>();
-    @OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Schedule> schedules;
+//    @OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Schedule> schedules;
 
     public Meeting(String name, String description, Integer maxParticipants) {
         this.name = name;

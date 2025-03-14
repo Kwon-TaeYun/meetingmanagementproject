@@ -26,10 +26,11 @@ public class Schedule {
     private LocalDate date;
     private LocalTime time;
     private String location;
-    private ScheduleStatus scheduleStatus;
+//    @Enumerated(EnumType.STRING)
+//    private ScheduleStatus scheduleStatus;
 
-    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UserSchedule> userSchedules;
+//    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<UserSchedule> userSchedules;
 
 
 
