@@ -3,6 +3,8 @@ package com.example.meetingmanagementproject.service;
 import com.example.meetingmanagementproject.entity.User;
 import com.example.meetingmanagementproject.repository.UserRepository;
 import com.example.meetingmanagementproject.util.JwtUtil;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -10,6 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 @Service
 public class UserService {
     private final UserRepository userRepository;
@@ -59,8 +62,11 @@ public class UserService {
             Optional<User> userOptional = userRepository.findById(userId);
             if (userOptional.isPresent()) {
                 User user = userOptional.get();
+                log.info("accessToken :: " + user.getAccessToken());
+                log.info("refreshToken :: " + user.getRefreshToken());
                 user.setRefreshToken(null); // RT 삭제 (AT는 어차피 만료되므로 변경 X)
                 userRepository.save(user);
+                jwtUtil.invalidateToken(token);
             }
         }
     }
