@@ -1,10 +1,7 @@
 package com.example.meetingmanagementproject.service;
 
 import com.example.meetingmanagementproject.dto.ScheduleDto;
-import com.example.meetingmanagementproject.entity.Meeting;
-import com.example.meetingmanagementproject.entity.Schedule;
-import com.example.meetingmanagementproject.entity.User;
-import com.example.meetingmanagementproject.entity.UserSchedule;
+import com.example.meetingmanagementproject.entity.*;
 import com.example.meetingmanagementproject.repository.ScheduleRepository;
 import com.example.meetingmanagementproject.repository.ScheduleUserRepository;
 import lombok.RequiredArgsConstructor;
@@ -59,4 +56,14 @@ public class ScheduleService {
     public List<User> findUsersFromSchedules(Long scheduleId){
         return scheduleUserRepository.findUsersByScheduleId(scheduleId);
     }
+
+    @Transactional
+    public void updateUserScheduleStatus(Long userId, Long scheduleId, ScheduleUserStatus newStatus) {
+        UserSchedule userSchedule = scheduleUserRepository.findByUserIdAndScheduleId(userId, scheduleId)
+                .orElseThrow();
+
+        userSchedule.setStatus(newStatus);
+        scheduleUserRepository.save(userSchedule);
+    }
+
 }

@@ -286,11 +286,11 @@ public class MeetingController {
 
             Schedule schedule = scheduleService.findSchedule(scheduleId);
 
-            scheduleService.deleteUserSchedule(userId, scheduleId);
+//            scheduleService.deleteUserSchedule(userId, scheduleId);
+            scheduleService.updateUserScheduleStatus(userId, scheduleId, ScheduleUserStatus.NOT_ATTENDING);
 
 
-
-            return ResponseEntity.ok("삭제 성공 !!");
+            return ResponseEntity.ok("미참여로 상태 수정이 완료되었습니다 !!");
         }catch (Exception e){
             return ResponseEntity.badRequest().body("삭제 실패 !!");
         }
