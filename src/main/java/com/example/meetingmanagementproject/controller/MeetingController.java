@@ -46,7 +46,7 @@ public class MeetingController {
                 return ResponseEntity.status(404).body("사용자를 찾을 수 없습니다.");
             }
 
-            meeting.setCurrentParticipants(0); // 예시: 참여자 수 1로 설정
+//            meeting.setCurrentParticipants(0); // 예시: 참여자 수 1로 설정
             meeting.setUser(user);  // 유저 정보 설정
 
             // 저장 시 예외 발생 여부 확인

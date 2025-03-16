@@ -30,8 +30,8 @@ public class User {
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 //    private List<Meeting> meetings; //생성자가 생성한 미팅
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UserSchedule> userSchedules;
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<UserSchedule> userSchedules;
 
     public User(String email, String password) {
         this.email = email;

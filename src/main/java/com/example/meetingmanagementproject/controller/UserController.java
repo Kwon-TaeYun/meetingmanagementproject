@@ -43,7 +43,11 @@ public class UserController {
         }
 
         String accessToken = authorization.substring(7); // "Bearer " 제거
-        userService.logout(accessToken);
-        return ResponseEntity.ok("Logged out successfully");
+        try {
+            userService.logout(accessToken);
+            return ResponseEntity.ok("Logged out successfully");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(401).body("Invalid token");
+        }
     }
 }
